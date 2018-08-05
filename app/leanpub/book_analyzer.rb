@@ -14,6 +14,7 @@ module Leanpub
       File.open(@book_path, 'rb') do |f|
         f.each_line do |line|
           report.add_chapter(line) if is_chapter?(line)
+          report.add_section(line) if is_section?(line)
         end
       end
 
