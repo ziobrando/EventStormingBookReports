@@ -1,18 +1,21 @@
 module Leanpub
   class StatusReport
 
-    @chapters
-    @sections
-    @title
+    attr_accessor :chapters
+    attr_accessor :sections
+    attr_accessor :title
+    attr_accessor :fixme_counter
 
     def initialize
       @chapters = []
       @sections = []
       @title = ''
+      @fixme_counter = 0
     end
     
     def add_chapter(line)
       @chapters << line
+      @fixme_counter += line.fixme_count
     end
 
     def add_section(line)
@@ -23,12 +26,14 @@ module Leanpub
       @chapters.size
     end
 
-    def to_s
-      "#{chapters_count} chapters in book #{@title}"
-    end
-
     def sections_count
       @sections.size
+    end
+
+    def to_s
+      "#{sections_count} sections, " +
+      "#{chapters_count} chapters in book #{@title}, \n" +
+          "and #{fixme_counter} FIXMEs overall."
     end
   end
 end

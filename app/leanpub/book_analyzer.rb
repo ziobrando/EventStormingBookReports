@@ -7,40 +7,48 @@ module Leanpub
       @book_path = book_path
     end
 
-    def generate_report
+    def analyze
 
       report = Leanpub::StatusReport.new
 
       File.open(@book_path, 'rb') do |f|
         f.each_line do |line|
-          report.add_chapter(line) if is_chapter?(line)
-          report.add_section(line) if is_section?(line)
+          if chapter?(line)
+            chapter_path = File.join(File.dirname(@book_path), line.strip)
+            chapter_analyzer = Leanpub::ChapterAnalyzer.new(chapter_path)
+            chapter_report = chapter_analyzer.analyze
+            report.add_chapter(chapter_report)
+
+          elsif section?(line)
+            report.add_section(line)
+          end
+
         end
+        puts report
+        report
       end
-
-      puts report
-      report
-
     end
 
-    def is_chapter?(line)
-      is_markdown?(line) and
-          not is_commented?(line) and
-          not is_section?(line)
+    def chapter?(line)
+      markdown?(line) and
+          not commented?(line) and
+          not section?(line)
     end
 
-    def is_commented?(line)
+    def commented?(line)
       (line.to_s.start_with?('#'))
     end
 
-    def is_markdown?(line)
+    def markdown?(line)
       (line.to_s.end_with?(".md") or
           line.to_s.end_with?(".md\n"))
     end
 
-    def is_section?(line)
+    def section?(line)
       line.to_s.start_with?("SECTION-")
     end
 
   end
 end
+
+

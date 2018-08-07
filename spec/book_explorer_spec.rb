@@ -6,11 +6,11 @@ require_relative '../app/leanpub'
 describe 'reading the master' do
 
   let(:book_file_path) {
-    #"../leanpub-intro-eventstorming/manuscript/Book.txt"
-    "./resources/TestBook.txt"
+    "../leanpub-intro-eventstorming/manuscript/Book.txt"
+    #"./resources/TestBook.txt"
   }
   let(:analyzer) { Leanpub::BookAnalyzer.new(book_file_path) }
-  let(:report) { analyzer.generate_report }
+  let(:report) { analyzer.analyze }
 
   it 'should generate a report' do
     report.should_not be_nil
